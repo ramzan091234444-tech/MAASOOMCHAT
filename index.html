@@ -1,21 +1,94 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="ur">
 <head>
-  <title>MaasoomChat - Rehnumai Ka App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAASOOMCHAT - Rehan Ka App</title>
+    <style>
+        body {
+            font-family: 'Noto Nastaliq Urdu', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            direction: rtl;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        .logo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .tagline {
+            font-size: 1.2em;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .btn {
+            display: block;
+            width: 80%;
+            margin: 15px auto;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-group {
+            background: #128C7E;
+            color: white;
+            border: 2px solid white;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
-    <img src="IMG-20260427-WA0034.jpg" alt="MaasoomChat Logo - Ustad Rehan" style="width:280px;margin:20px auto;display:block;border-radius:15px;">
-  <p>Rehan ka app jahan koi dhoka nahi, sirf rehnumai hai</p>
-  <button>Ustad se Pocho</button>
-  
-  <br><br>
-  <a href="https://wa.me/923706729575?text=Sir%20salam%20Ustad%20se%20sawal%20poochna%20hai">
-    <button style="background:#25D366;color:white;padding:15px 25px;border:none;border-radius:8px;font-size:18px;font-weight:bold;">
-      📱 WhatsApp Pe Ustad Se Pocho
-    </button>
-  </a>
-  <br><br>
-  <p style="color:gray;font-size:14px;">Ustad Bot 24 Ghantay Hazir Hai 👑</p>
-  
+    <div class="container">
+        <img src="logo.png" alt="MAASOOMCHAT Logo" class="logo">
+        <h1>MAASOOMCHAT</h1>
+        <p class="tagline">Rehan ka app jahan koi dhoka nahi, sirf rehnumai hai</p>
+        
+        <a href="https://wa.me/923XXXXXXXXX" class="btn btn-whatsapp">
+            📱 WhatsApp Pe Ustad Se Pocho
+        </a>
+        
+        <a href="https://chat.whatsapp.com/Eg5ubGkU8mw0tfDpiRUeFI?mode=gi_t" class="btn btn-group">
+            👥 Community Group Join Karein
+        </a>
+        
+        <p class="footer">Ustad Bot 24 Ghantay Hazir Hai 🤖<br>Students aapas mein baat karein 💬</p>
+    </div>
 </body>
-</html>
+  </html>
