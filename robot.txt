@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ramzan091234444-tech.github.io/sitemap.xml
