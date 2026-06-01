@@ -1,0 +1,9 @@
+try {
+  let res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(msg)}?model=openai`);
+  let reply = await res.text();
+  removeLoading();
+  addMessage(reply, 'bot');
+} catch(e) {
+  removeLoading();
+  addMessage('Error: AI so gaya 🤔 Refresh karo', 'bot');
+}
