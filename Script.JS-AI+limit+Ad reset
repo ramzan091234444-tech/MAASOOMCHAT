@@ -6,7 +6,7 @@ key
 
 
 
-let GROQ_KEY = localStorage.getItem('groq_key');
+let GROQ_KEY = localStorage.getItem('gsk_Aqb6bAwO4WW8vk8lVVjRWGdyb3FY93O+/+ihVpyN7Ojzgep+/lW6pEX34');
 const DAILY_LIMIT = 5;
 
 // ===== LIMIT SYSTEM =====
