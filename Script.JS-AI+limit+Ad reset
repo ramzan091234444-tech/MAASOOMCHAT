@@ -1,31 +1,56 @@
-// ======= SETTINGS - YEHAN APNI KEY DALO =======
-const GROQ_API_KEY =( "gsk_CNmSXJmw06yVTIQG2MikWG)+(dyb3FY4aySCsajAxXkL8NajnC8eeVs"); // groq.com se free le lo
-const DAILY_LIMIT = 5;
-const MODEL = "llama-3.1-8b-instant"; // sabse tez free model
 
-// ======= LIMIT SYSTEM =======
+// Key browser me save hogi, GitHub pe nahi
+
+🔐 
+key
+
+
+
+let GROQ_KEY = localStorage.getItem('groq_key');
+const DAILY_LIMIT = 5;
+
+// ===== LIMIT SYSTEM =====
 let usesLeft = localStorage.getItem('ai_uses');
 let lastDate = localStorage.getItem('ai_date');
 let today = new Date().toDateString();
 
-// Naya din = reset
 if(lastDate!== today) {
   usesLeft = DAILY_LIMIT;
   localStorage.setItem('ai_date', today);
   localStorage.setItem('ai_uses', DAILY_LIMIT);
 }
-
 usesLeft = parseInt(usesLeft) || DAILY_LIMIT;
 updateUI();
 
-// UI Update karega limit + button
+// ===== KEY KA BUTTON =====
+function setKey() {
+  let key = prompt("🔑 Groq API Key dalo bhai:\ngroq.com se free le lo");
+  if(key && key.startsWith('gsk_')) {
+    localStorage.setItem('groq_key', key);
+    GROQ_KEY = key;
+    alert('Key save ho gai! Ab AI chalay ga ✅');
+    document.getElementById('keyBtn').style.display = 'none';
+  } else {
+    alert('Ghalat key hai. gsk_ se start hoti hai');
+  }
+}
+
+// Page load pe check karo key hai ya nahi
+window.onload = function() {
+  if(!GROQ_KEY) {
+    document.getElementById('keyBtn').style.display = 'block';
+    document.getElementById('sendBtn').disabled = true;
+  } else {
+    document.getElementById('keyBtn').style.display = 'none';
+  }
+  updateUI();
+}
+
 function updateUI() {
   let limitEl = document.getElementById('limit');
   let sendBtn = document.getElementById('sendBtn');
   let adBtn = document.getElementById('watchAdBtn');
-
   if(limitEl) limitEl.innerText = usesLeft;
-
   if(usesLeft <= 0) {
     if(sendBtn) sendBtn.disabled = true;
     if(adBtn) adBtn.style.display = 'block';
@@ -35,109 +60,63 @@ function updateUI() {
   }
 }
 
-// ======= MSG BHEJNE KA SYSTEM =======
 async function sendMsg() {
+  if(!GROQ_KEY) return alert('Pehle Key Set karo button se 🔑');
+  
   let input = document.getElementById('userInput');
   let msg = input.value.trim();
-
   if(!msg) return alert('Kuch likho bhai 😅');
   if(usesLeft <= 0) return alert('Limit khatam! Ad dekho 5 use pao');
 
-  // User ka msg dikhao
   addMessage(msg, 'user');
   input.value = '';
-
-  // Limit kam karo
   usesLeft--;
   localStorage.setItem('ai_uses', usesLeft);
   updateUI();
-
-  // Loading msg
   addMessage('Soch raha hun... 🤔', 'bot', true);
 
   try {
-    // GROQ API CALL - AI KA DIMAAG YAHAN HAI
-    let response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + GROQ_API_KEY
+        'Authorization': 'Bearer ' + GROQ_KEY,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: "llama-3.1-8b-instant",
         messages: [
-          {role: 'system', content: 'Tum Rehan ke AI dost ho. Urdu me short aur helpful jawab do.'},
-          {role: 'user', content: msg}
-        ],
-        max_tokens: 500,
-        temperature: 0.7
+          {role: "system", content: "Tum Rehan ke AI dost ho. Urdu/Roman Urdu me short jawab do."},
+          {role: "user", content: msg}
+        ]
       })
     });
-
-    let data = await response.json();
-
-    if(data.error) {
-      throw new Error(data.error.message);
-    }
-
+    let data = await res.json();
     let reply = data.choices[0].message.content;
-
-    // Loading hata ke reply dikhao
     removeLoading();
     addMessage(reply, 'bot');
-
-  } catch(error) {
+  } catch(e) {
     removeLoading();
-    addMessage('Arre network error aa gaya bhai. WiFi check karo 🔄', 'bot');
-    console.log(error);
-
-    // Agar error aaye to limit wapis kar do
-    usesLeft++;
-    localStorage.setItem('ai_uses', usesLeft);
-    updateUI();
+    addMessage('Error: Key ghalat hai ya net ka masla 🤔', 'bot');
   }
 }
 
-// ======= MSG SCREEN PE DIKHANA =======
-function addMessage(text, sender, isLoading = false) {
-  let chatBox = document.getElementById('chatBox');
-  if(!chatBox) return;
-
+function addMessage(text, sender, loading=false) {
+  let box = document.getElementById('chatBox');
   let div = document.createElement('div');
   div.className = 'msg ' + sender;
-  if(isLoading) div.id = 'loadingMsg';
+  if(loading) div.id = 'loadingMsg';
+  div.style.cssText = sender==='user'? 'text-align:right; margin:10px 0; background:#667eea; color:white; padding:10px 15px; border-radius:15px 15px 0 15px; display:inline-block; float:right; clear:both' : 'text-align:left; margin:10px 0; background:#f0f0f0; padding:10px 15px; border-radius:15px 15px 15px 0; display:inline-block; float:left; clear:both';
   div.innerText = text;
-
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
 }
-
-function removeLoading() {
-  let loading = document.getElementById('loadingMsg');
-  if(loading) loading.remove();
-}
-
-// ======= AD DEKH KE RESET SYSTEM =======
+function removeLoading() { document.getElementById('loadingMsg')?.remove(); }
 function watchAd() {
-  alert('📺 Ab AdSense ka video ad chalega\nAd khatam hote hi 5 use wapis mil jayenge!');
-
-  // YAHAN ADSENSE REWARDED AD KA CODE LAGEGA
-  // Test ke liye direct reset kar rahe hain
+  alert('Ad start... 3 sec baad 5 use mil jayenge!');
   setTimeout(() => {
     usesLeft = DAILY_LIMIT;
     localStorage.setItem('ai_uses', DAILY_LIMIT);
     updateUI();
-    alert('Shabash! 🎉 5 free use mil gaye');
-    addMessage('Ad dekhne ka shukriya! Ab 5 sawal aur pooch sakte ho 😎', 'bot');
-  }, 2000);
+    alert('Mubarak ho! 5 free sawal wapis 🎉');
+  }, 3000);
 }
-
-// ======= ENTER KEY SE SEND =======
-document.addEventListener('DOMContentLoaded', function() {
-  let input = document.getElementById('userInput');
-  if(input) {
-    input.addEventListener('keypress', function(e) {
-      if(e.key === 'Enter') sendMsg();
-    });
-  }
-});
