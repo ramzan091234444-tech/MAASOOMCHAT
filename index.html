@@ -84,7 +84,10 @@
 <!DOCTYPE html>
 <html lang="ur">
 <head>
-  <meta charset="UTF-8">
+<a href="https://duckgo.com/?q=AI+Chat" target="_blank">
+  <button>🦆 DuckAI Kholo</button>
+</a>
+    <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MaasoomChat - AI Dost</title>
   <meta name="theme-color" content="#764ba2">
@@ -140,8 +143,6 @@ button:disabled{opacity:0.5;cursor:not-allowed}
 <div class="container">
 <h1>🤖 MaasoomChat AI</h1>
 
-<button id="keyBtn" onclick="setKey()">🔑 API Key Set Karo - 1 Baar</button>
-<p style="text-align:center;color:#666">Bache hue sawal: <b id="limit">5</b>/5</p>
 
 <div id="chatBox">
 <div class="msg bot">Salam! Main AI hun 😊 Kya poochna hai?</div>
@@ -153,95 +154,7 @@ button:disabled{opacity:0.5;cursor:not-allowed}
 </div>
 
 <button id="watchAdBtn" onclick="watchAd()" style="display:none;width:100%">📺 Ad Dekho = 5 Sawal Free</button>
-</div>
-
-<script>
-let GROQ_KEY = localStorage.getItem('');
-const DAILY_LIMIT = 5;
-
-let usesLeft = localStorage.getItem('ai_uses');
-let lastDate = localStorage.getItem('ai_date');
-let today = new Date().toDateString();
-
-if(lastDate!== today) {
-  usesLeft = DAILY_LIMIT;
-  localStorage.setItem('ai_date', today);
-  localStorage.setItem('ai_uses', DAILY_LIMIT);
-}
-usesLeft = parseInt(usesLeft) || DAILY_LIMIT;
-
-window.onload = function() {
-  if(!GROQ_KEY) {
-    document.getElementById('keyBtn').style.display = 'block';
-    document.getElementById('sendBtn').disabled = true;
-  } else {
-    document.getElementById('keyBtn').style.display = 'none';
-    document.getElementById('sendBtn').disabled = false;
-  }
-  updateUI();
-}
-
-function setKey() {
-  let key = prompt("🔑 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);
-  if(key && key.startsWith('gsk_')) {
-    localStorage.setItem('groq_key', key);
-    GROQ_KEY = key;
-    alert('Key save ho gai! ✅');
-    document.getElementById('keyBtn').style.display = 'none';
-    document.getElementById('sendBtn').disabled = false;
-  } else {
-    alert('Ghalat key hai. gsk_ se start hoti hai');
-  }
-}
-
-function updateUI() {
-  document.getElementById('limit').innerText = usesLeft;
-  if(usesLeft <= 0) {
-    document.getElementById('sendBtn').disabled = true;
-    document.getElementById('watchAdBtn').style.display = 'block';
-  } else {
-    document.getElementById('sendBtn').disabled = false;
-    document.getElementById('watchAdBtn').style.display = 'none';
-  }
-}
-
-async function sendMsg() {
-  if(!GROQ_KEY) return alert('hi');
-  
-  let input = document.getElementById('userInput');
-  let msg = input.value.trim();
-  if(!msg) return alert('Kuch likho bhai 😅');
-  if(usesLeft <= 0) return alert('Limit khatam! Ad dekho 5 use pao');
-
-  addMessage(msg, 'user');
-  input.value = '';
-  usesLeft--;
-  localStorage.setItem('ai_uses', usesLeft);
-  updateUI();
-  addMessage('Soch raha hun... 🤔', 'bot', true);
-
-  try {
-    let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + GROQ_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
-        messages: [
-          {role: "system", content: "Tum Rehan ke AI dost ho. Urdu/Roman Urdu me short jawab do."},
-          {role: "user", content: msg}
-        ]
-      })
-    });
-    let data = await res.json();
-    let reply = data.choices[0].message.content;
-    removeLoading();
-    addMessage(reply, 'bot');
-  } catch(e) {
-    removeLoading();
-    addMessage('Error: Key ghalat hai ya net ka masla 🤔', 'bot');
+</div>et ka masla 🤔', 'bot');
   }
 }
 
@@ -268,114 +181,6 @@ function watchAd() {
 
 document.getElementById('userInput').addEventListener('keypress', function(e) {
   if(e.key === 'Enter') sendMsg();
-});
-</script>
-</body>
-    </html>
-  <!-- 4. Input + Send -->
-  <div style="display:flex; gap:10px; margin-bottom:10px">
-    <input id="userInput" placeholder="Yahan likho...">
-    <button id="sendBtn" onclick="sendMsg()">Bhejo</button>
-  </div>
-  
-  <!-- 5. Ad Button -->
-  <button id="watchAdBtn" onclick="watchAd()" style="display:none; width:100%">📺 Ad Dekho = 5 Sawal Free</button>
-</div>
-
-<script>
-// ===== SAB SETTING YAHIN HAI =====
-let GROQ_KEY = localStorage.getItem('groq_key');
-const DAILY_LIMIT = 5;
-
-// Limit system
-let usesLeft = localStorage.getItem('ai_uses');
-let lastDate = localStorage.getItem('ai_date');
-let today = new Date().toDateString();
-
-if(lastDate!== today) {
-  usesLeft = DAILY_LIMIT;
-  localStorage.setItem('ai_date', today);
-  localStorage.setItem('ai_uses', DAILY_LIMIT);
-}
-usesLeft = parseInt(usesLeft) || DAILY_LIMIT;
-
-window.onload = function() {
-  if(!GROQ_KEY) {
-    document.getElementById('keyBtn').style.display = 'block';
-    document.getElementById('sendBtn').disabled = true;
-  } else {
-    document.getElementById('keyBtn').style.display = 'none';
-    document.getElementById('sendBtn').disabled = false;
-  }
-  updateUI();
-}
-
-function setKey() {
-  let key = prompt("🔑 Groq API Key dalo bhai:\n1. groq.com pe jao\n2. Login > API Keys > Create\n3. Key copy karke yahan paste karo");
-  if(key && key.startsWith('gsk_')) {
-    localStorage.setItem('groq_key', key);
-    GROQ_KEY = key;
-    alert('Key save ho gai! Ab AI chalay ga ✅');
-    document.getElementById('keyBtn').style.display = 'none';
-    document.getElementById('sendBtn').disabled = false;
-  } else {
-    alert('Ghalat key hai. gsk_ se start hoti hai');
-  }
-}
-
-function updateUI() {
-  document.getElementById('limit').innerText = usesLeft;
-  if(usesLeft <= 0) {
-    document.getElementById('sendBtn').disabled = true;
-    document.getElementById('watchAdBtn').style.display = 'block';
-  } else {
-    document.getElementById('sendBtn').disabled = false;
-    document.getElementById('watchAdBtn').style.display = 'none';
-  }
-}
-
-async function sendMsg() {
-  if(!GROQ_KEY) return alert('Pehle 🔑 API Key Set Karo button dabao');
-  
-  let input = document.getElementById('userInput');
-  let msg = input.value.trim();
-  if(!msg) return alert('Kuch likho bhai 😅');
-  if(usesLeft <= 0) return alert('Limit khatam! Ad dekho 5 use pao');
-
-  addMessage(msg, 'user');
-  input.value = '';
-  usesLeft--;
-  localStorage.setItem('ai_uses', usesLeft);
-  updateUI();
-  addMessage('Soch raha hun... 🤔', 'bot', true);
-
-  try {
-    let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + GROQ_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
-        messages: [
-          {role: "system", content: "Tum Rehan ke AI dost ho. Urdu/Roman Urdu me short, funny jawab do."},
-          {role: "user", content: msg}
-        ]
-      })
-    });
-    let data = await res.json();
-    let reply = data.choices[0].message.content;
-    removeLoading();
-    addMessage(reply, 'bot');
-  } catch(e) {
-    removeLoading();
-    addMessage('Error: Key ghalat hai ya net ka masla 🤔', 'bot');
-  }
-}
-
-function addMessage(text, sender, loading=false) {
-  let box = document.getElementById('chatBox');
   let div = document.createElement('div');
   div.className = 'msg ' + sender;
   if(loading) div.id = 'loadingMsg';
