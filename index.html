@@ -116,7 +116,162 @@
   <div id="chatBox">
     <div class="msg bot">Salam! Main Rehan ka AI hun 😊 Kya poochna hai?</div>
   </div>
+  <!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaasoomChat AI</title>
+<style>
+body{font-family:Arial;background:#f5f5f5;margin:0;padding:20px}
+.container{max-width:600px;margin:auto;background:white;padding:20px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+h1{text-align:center;color:#667eea}
+#chatBox{height:350px;overflow-y:auto;border:2px solid #eee;border-radius:12px;padding:15px;margin:15px 0;background:#fafafa}
+.msg{margin:10px 0;padding:10px 15px;border-radius:15px;display:inline-block;clear:both;max-width:80%}
+.user{text-align:right;background:#667eea;color:white;float:right;border-radius:15px 15px 0 15px}
+.bot{text-align:left;background:#f0f0f0;float:left;border-radius:15px 15px 15px 0}
+input{flex:1;padding:14px;border:2px solid #ddd;border-radius:10px;outline:none}
+button{padding:14px 25px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:bold}
+button:disabled{opacity:0.5;cursor:not-allowed}
+#keyBtn{background:orange;width:100%;margin:15px 0}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🤖 MaasoomChat AI</h1>
+
+<button id="keyBtn" onclick="setKey()">🔑 API Key Set Karo - 1 Baar</button>
+<p style="text-align:center;color:#666">Bache hue sawal: <b id="limit">5</b>/5</p>
+
+<div id="chatBox">
+<div class="msg bot">Salam! Main AI hun 😊 Kya poochna hai?</div>
+</div>
+
+<div style="display:flex;gap:10px;margin-bottom:10px">
+<input id="userInput" placeholder="Yahan likho...">
+<button id="sendBtn" onclick="sendMsg()">Bhejo</button>
+</div>
+
+<button id="watchAdBtn" onclick="watchAd()" style="display:none;width:100%">📺 Ad Dekho = 5 Sawal Free</button>
+</div>
+
+<script>
+let GROQ_KEY = localStorage.getItem('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');
+const DAILY_LIMIT = 5;
+
+let usesLeft = localStorage.getItem('ai_uses');
+let lastDate = localStorage.getItem('ai_date');
+let today = new Date().toDateString();
+
+if(lastDate!== today) {
+  usesLeft = DAILY_LIMIT;
+  localStorage.setItem('ai_date', today);
+  localStorage.setItem('ai_uses', DAILY_LIMIT);
+}
+usesLeft = parseInt(usesLeft) || DAILY_LIMIT;
+
+window.onload = function() {
+  if(!GROQ_KEY) {
+    document.getElementById('keyBtn').style.display = 'block';
+    document.getElementById('sendBtn').disabled = true;
+  } else {
+    document.getElementById('keyBtn').style.display = 'none';
+    document.getElementById('sendBtn').disabled = false;
+  }
+  updateUI();
+}
+
+function setKey() {
+  let key = prompt("🔑 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);
+  if(key && key.startsWith('gsk_')) {
+    localStorage.setItem('groq_key', key);
+    GROQ_KEY = key;
+    alert('Key save ho gai! ✅');
+    document.getElementById('keyBtn').style.display = 'none';
+    document.getElementById('sendBtn').disabled = false;
+  } else {
+    alert('Ghalat key hai. gsk_ se start hoti hai');
+  }
+}
+
+function updateUI() {
+  document.getElementById('limit').innerText = usesLeft;
+  if(usesLeft <= 0) {
+    document.getElementById('sendBtn').disabled = true;
+    document.getElementById('watchAdBtn').style.display = 'block';
+  } else {
+    document.getElementById('sendBtn').disabled = false;
+    document.getElementById('watchAdBtn').style.display = 'none';
+  }
+}
+
+async function sendMsg() {
+  if(!GROQ_KEY) return alert('hi');
   
+  let input = document.getElementById('userInput');
+  let msg = input.value.trim();
+  if(!msg) return alert('Kuch likho bhai 😅');
+  if(usesLeft <= 0) return alert('Limit khatam! Ad dekho 5 use pao');
+
+  addMessage(msg, 'user');
+  input.value = '';
+  usesLeft--;
+  localStorage.setItem('ai_uses', usesLeft);
+  updateUI();
+  addMessage('Soch raha hun... 🤔', 'bot', true);
+
+  try {
+    let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + GROQ_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: [
+          {role: "system", content: "Tum Rehan ke AI dost ho. Urdu/Roman Urdu me short jawab do."},
+          {role: "user", content: msg}
+        ]
+      })
+    });
+    let data = await res.json();
+    let reply = data.choices[0].message.content;
+    removeLoading();
+    addMessage(reply, 'bot');
+  } catch(e) {
+    removeLoading();
+    addMessage('Error: Key ghalat hai ya net ka masla 🤔', 'bot');
+  }
+}
+
+function addMessage(text, sender, loading=false) {
+  let box = document.getElementById('chatBox');
+  let div = document.createElement('div');
+  div.className = 'msg ' + sender;
+  if(loading) div.id = 'loadingMsg';
+  div.innerText = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+function removeLoading() { document.getElementById('loadingMsg')?.remove(); }
+
+function watchAd() {
+  alert('Ad start... 3 sec baad 5 use mil jayenge!');
+  setTimeout(() => {
+    usesLeft = DAILY_LIMIT;
+    localStorage.setItem('ai_uses', DAILY_LIMIT);
+    updateUI();
+    alert('Mubarak ho! 5 free sawal wapis 🎉');
+  }, 3000);
+}
+
+document.getElementById('userInput').addEventListener('keypress', function(e) {
+  if(e.key === 'Enter') sendMsg();
+});
+</script>
+</body>
+    </html>
   <!-- 4. Input + Send -->
   <div style="display:flex; gap:10px; margin-bottom:10px">
     <input id="userInput" placeholder="Yahan likho...">
