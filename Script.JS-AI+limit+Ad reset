@@ -1,5 +1,5 @@
 // ======= SETTINGS - YEHAN APNI KEY DALO =======
-const GROQ_API_KEY = "gsk_XXX_YAHAN_KEY_PASTE_KARO"; // groq.com se free le lo
+const GROQ_API_KEY =( "gsk_CNmSXJmw06yVTIQG2MikWG)+(dyb3FY4aySCsajAxXkL8NajnC8eeVs"); // groq.com se free le lo
 const DAILY_LIMIT = 5;
 const MODEL = "llama-3.1-8b-instant"; // sabse tez free model
 
